@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>디지털 굿판 🔥</title>
+<meta property="og:title" content="디지털 굿판 🔥">
+<meta property="og:description" content="과로와 진상으로부터 당신을 지키는 의식 — 저주 · 부적 · 신내림 · 액막이">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://minju0-1107.github.io/goodpan_/gutpan.html">
+<meta property="og:image" content="https://minju0-1107.github.io/goodpan_/thumbnail.png">
+<meta property="og:locale" content="ko_KR">
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+:root {
+  --red: #b92c1e;
+  --dark-red: #6e1209;
+  --gold: #c9941a;
+  --bright-gold: #f0c040;
+  --ink: #110700;
+  --paper: #f0e0b8;
+  --paper-dim: #c4a86a;
+  --smoke: rgba(180,120,30,0.12);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--ink);
+  min-height: 100dvh;
+  font-family: 'Pretendard', -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background:
+    radial-gradient(ellipse at 15% 90%, rgba(150,50,10,0.25) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 10%, rgba(100,15,5,0.3) 0%, transparent 50%);
+  pointer-events:none; z-index:0;
+}
+
+#sparks { position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden; }
+.spark {
+  position:absolute; width:3px; height:3px; background:var(--bright-gold);
+  border-radius:50%; animation:sparkup linear infinite; opacity:0;
+}
+@keyframes sparkup {
+  0%   { transform:translateY(0) translateX(0) scale(1); opacity:.9; }
+  100% { transform:translateY(-110vh) translateX(var(--dx,0px)) scale(0); opacity:0; }
+}
+
+.app { position:relative; z-index:2; max-width:430px; margin:0 auto; padding-bottom:60px; }
+
+/* HEADER */
+.header { text-align:center; padding:36px 20px 18px; }
+.header-badge {
+  display:inline-block; background:var(--red);
+  color:var(--bright-gold); font-family:'Black Han Sans',sans-serif;
+  font-size:10px; letter-spacing:3px; padding:3px 14px; border-radius:2px; margin-bottom:10px;
+}
+h1 {
+  font-family:'Black Han Sans',sans-serif; font-size:40px;
+  color:var(--bright-gold); letter-spacing:5px; line-height:1;
+  text-shadow: 0 0 12px rgba(210,150,20,.5), 2px 2px 0 var(--dark-red);
+}
+.header-sub { color:rgba(240,192,64,.5); font-size:12px; margin-top:6px; letter-spacing:1px; }
+.header-divider {
+  margin:16px auto 0; width:70%; height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+
+/* TABS */
+.tabs { display:flex; gap:6px; margin:18px 14px 0; }
+.tab {
+  flex:1; padding:10px 2px; text-align:center;
+  background:rgba(255,255,255,.04); border:1px solid rgba(201,148,26,.25);
+  border-radius:8px; color:rgba(240,192,64,.4);
+  font-family:'Black Han Sans',sans-serif; font-size:11px; letter-spacing:.5px;
+  cursor:pointer; transition:all .2s; user-select:none;
+}
+.tab.active {
+  background:var(--red); border-color:var(--gold);
+  color:var(--bright-gold); box-shadow:0 0 18px rgba(185,44,30,.5);
+}
+
+/* PANELS */
+.panel { display:none; padding:18px 14px; }
+.panel.active { display:block; animation:fadein .25s ease; }
+@keyframes fadein { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+/* CARD */
+.card {
+  background:linear-gradient(135deg,rgba(240,224,184,.07),rgba(240,224,184,.02));
+  border:1px solid rgba(201,148,26,.22); border-radius:12px;
+  padding:18px; margin-bottom:14px;
+}
+.card-title {
+  font-family:'Black Han Sans',sans-serif; color:var(--gold);
+  font-size:14px; letter-spacing:1px; margin-bottom:13px;
+  display:flex; align-items:center; gap:7px;
+}
+
+/* INPUTS */
+textarea, input[type=text] {
+  width:100%; background:rgba(0,0,0,.45);
+  border:1px solid rgba(201,148,26,.28); border-radius:8px;
+  color:var(--paper); font-family:'Pretendard', sans-serif; font-size:14px;
+  padding:11px 13px; resize:none; outline:none; transition:border-color .2s;
+  line-height:1.5;
+}
+textarea:focus, input[type=text]:focus { border-color:var(--gold); }
+textarea::placeholder, input::placeholder { color:rgba(196,168,106,.45); }
+
+/* BUTTONS */
+.btn {
+  display:block; width:100%; padding:14px;
+  font-family:'Black Han Sans',sans-serif; font-size:16px; letter-spacing:2px;
+  border:none; border-radius:10px; cursor:pointer;
+  transition:all .18s; margin-top:12px; position:relative; overflow:hidden;
+}
+.btn-red {
+  background:linear-gradient(135deg,var(--red),var(--dark-red));
+  color:var(--bright-gold); box-shadow:0 4px 20px rgba(185,44,30,.4);
+}
+.btn-red:active { transform:scale(.97); box-shadow:0 2px 10px rgba(185,44,30,.3); }
+.btn-gold {
+  background:linear-gradient(135deg,var(--gold),#8a6010);
+  color:var(--ink); box-shadow:0 4px 20px rgba(201,148,26,.35);
+}
+.btn-gold:active { transform:scale(.97); }
+.btn::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.12),transparent);
+  pointer-events:none;
+}
+
+/* OUTPUT BOX */
+.output-box {
+  background:rgba(0,0,0,.5); border:1px solid rgba(201,148,26,.3);
+  border-radius:10px; padding:16px; margin-top:14px;
+  color:var(--paper); font-size:14px; line-height:1.8;
+  min-height:80px; display:none; position:relative; overflow:hidden;
+}
+.output-box.show { display:block; animation:fadein .3s ease; }
+.output-box::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(185,44,30,.06),transparent);
+  pointer-events:none;
+}
+
+/* AMULET */
+.amulet-wrap { text-align:center; margin-top:14px; display:none; }
+.amulet-wrap.show { display:block; animation:fadein .4s ease; }
+.amulet-canvas-wrap {
+  display:inline-block; padding:16px;
+  background:linear-gradient(135deg,#c8001a,#6e0010);
+  border:3px solid var(--bright-gold);
+  border-radius:4px; box-shadow:0 0 30px rgba(200,0,26,.5), inset 0 0 20px rgba(0,0,0,.3);
+  position:relative;
+}
+.amulet-canvas-wrap::before,
+.amulet-canvas-wrap::after {
+  content:''; position:absolute;
+  border:1px solid rgba(240,192,64,.4); border-radius:2px; inset:5px;
+  pointer-events:none;
+}
+.amulet-canvas-wrap::after { inset:8px; border-color:rgba(240,192,64,.2); }
+#amuletCanvas { display:block; }
+.amulet-label {
+  font-family:'Black Han Sans',sans-serif; color:var(--gold);
+  font-size:11px; letter-spacing:2px; margin-top:12px;
+}
+
+/* CURSE */
+.curse-list { display:flex; flex-direction:column; gap:8px; margin-bottom:12px; }
+.curse-option {
+  background:rgba(0,0,0,.35); border:1px solid rgba(185,44,30,.3);
+  border-radius:8px; padding:11px 14px; color:var(--paper-dim);
+  font-size:13px; cursor:pointer; transition:all .2s; line-height:1.5;
+}
+.curse-option:active { transform:scale(.98); }
+.curse-option.selected {
+  background:rgba(185,44,30,.25); border-color:var(--red);
+  color:var(--paper);
+}
+.curse-option .curse-emoji { margin-right:8px; }
+
+/* PROPHECY */
+.prophecy-card {
+  background:linear-gradient(160deg,rgba(30,0,0,.7),rgba(0,0,0,.5));
+  border:1px solid rgba(201,148,26,.3); border-radius:12px;
+  padding:22px; text-align:center;
+}
+.prophecy-symbol {
+  font-size:48px; margin-bottom:12px;
+  animation:wobble 3s ease-in-out infinite;
+}
+@keyframes wobble {
+  0%,100%{transform:rotate(-3deg) scale(1)}
+  50%{transform:rotate(3deg) scale(1.06)}
+}
+.prophecy-text {
+  color:var(--paper); font-size:15px; line-height:1.9;
+  font-weight:700; letter-spacing:.5px; min-height:60px;
+}
+.prophecy-from {
+  color:var(--paper-dim); font-size:11px; margin-top:12px; letter-spacing:1px;
+}
+
+/* PROGRESS RITUAL */
+.ritual-progress { text-align:center; padding:20px 0; display:none; }
+.ritual-progress.show { display:block; }
+.ritual-circle {
+  width:70px; height:70px; border-radius:50%; margin:0 auto 14px;
+  border:3px solid var(--red); border-top-color:var(--bright-gold);
+  animation:spin 1s linear infinite;
+}
+@keyframes spin { to{transform:rotate(360deg)} }
+.ritual-msg { color:var(--gold); font-family:'Black Han Sans',sans-serif; font-size:13px; letter-spacing:1px; }
+
+/* PILLS */
+.pills { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0; }
+.pill {
+  padding:5px 11px; border-radius:20px;
+  background:rgba(201,148,26,.12); border:1px solid rgba(201,148,26,.3);
+  color:var(--paper-dim); font-size:12px; cursor:pointer; transition:all .15s;
+}
+.pill:active,.pill.on {
+  background:rgba(185,44,30,.35); border-color:var(--red); color:var(--paper);
+}
+
+/* SHARE BTN */
+.share-row { display:flex; gap:8px; margin-top:10px; }
+.btn-sm {
+  flex:1; padding:10px; font-family:'Black Han Sans',sans-serif; font-size:12px;
+  letter-spacing:1px; border:1px solid rgba(201,148,26,.4); border-radius:8px;
+  background:rgba(201,148,26,.1); color:var(--gold); cursor:pointer; transition:all .18s;
+}
+.btn-sm:active { background:rgba(201,148,26,.25); }
+
+.section-label {
+  color:var(--paper-dim); font-size:11px; letter-spacing:1px; margin-bottom:8px;
+}
+
+/* COUNTER */
+.ritual-counter {
+  text-align:center; padding:10px;
+  color:rgba(240,192,64,.35); font-size:11px; letter-spacing:1px;
+}
+
+/* TOAST */
+#toast {
+  position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(60px);
+  background:rgba(20,5,0,.95); border:1px solid var(--gold); border-radius:10px;
+  color:var(--bright-gold); font-family:'Black Han Sans',sans-serif;
+  font-size:13px; padding:12px 22px; z-index:999; letter-spacing:1px;
+  transition:transform .3s ease, opacity .3s ease; opacity:0;
+  white-space:nowrap;
+}
+#toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+</style>
+</head>
+<body>
+
+<div id="sparks"></div>
+
+<div class="app">
+  <div class="header">
+    <div class="header-badge">⚡ DIGITAL RITUAL ⚡</div>
+    <h1>디지털 굿판</h1>
+    <div class="header-sub">과로와 진상으로부터 당신을 지키는 의식</div>
+    <div class="header-divider"></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab(0)">🔥<br>저주</div>
+    <div class="tab" onclick="switchTab(1)">📜<br>부적</div>
+    <div class="tab" onclick="switchTab(2)">🔮<br>신내림</div>
+    <div class="tab" onclick="switchTab(3)">💊<br>액막이</div>
+  </div>
+
+  <!-- ===== TAB 0: 저주 ===== -->
+  <div class="panel active" id="panel0">
+    <div class="card">
+      <div class="card-title">👹 이상한 인간 저주하기</div>
+      <div class="section-label">누구를 저주할까요</div>
+      <input type="text" id="curseTarget" placeholder="예) 팀장, 그 진상 클라이언트, 옆팀 000..." maxlength="30">
+
+      <div style="margin-top:14px;" class="section-label">저주 강도 선택</div>
+      <div class="curse-list">
+        <div class="curse-option" onclick="selectCurse(this, 'light')">
+          <span class="curse-emoji">🦷</span> <b>순한 맛</b> — 잠깐 혀를 깨무는 저주
+        </div>
+        <div class="curse-option selected" onclick="selectCurse(this, 'medium')">
+          <span class="curse-emoji">🦴</span> <b>중간 맛</b> — 꼬리뼈 골절로 두 달 고통받기
+        </div>
+        <div class="curse-option" onclick="selectCurse(this, 'spicy')">
+          <span class="curse-emoji">👶</span> <b>매운 맛</b> — 본인 자식이 나중에 본인같은 상사 만나기
+        </div>
+        <div class="curse-option" onclick="selectCurse(this, 'karma')">
+          <span class="curse-emoji">🪞</span> <b>철학 맛</b> — 자기 민낯을 제대로 보는 기회 얻기
+        </div>
+      </div>
+
+      <button class="btn btn-red" onclick="performCurse()">🔥 저주 시전하기 🔥</button>
+    </div>
+
+    <div class="ritual-progress" id="curseProgress">
+      <div class="ritual-circle"></div>
+      <div class="ritual-msg" id="curseMsgText">기운을 모으는 중...</div>
+    </div>
+
+    <div class="output-box" id="curseResult"></div>
+
+    <div class="ritual-counter" id="curseCount"></div>
+  </div>
+
+  <!-- ===== TAB 1: 부적 ===== -->
+  <div class="panel" id="panel1">
+    <div class="card">
+      <div class="card-title">📜 이상한 인간 퇴치 부적</div>
+      <div class="section-label">어떤 부적이 필요하세요?</div>
+      <div class="pills">
+        <div class="pill on" onclick="togglePill(this)">진상 차단</div>
+        <div class="pill" onclick="togglePill(this)">과로 방지</div>
+        <div class="pill" onclick="togglePill(this)">꼰대 격퇴</div>
+        <div class="pill" onclick="togglePill(this)">야근 소멸</div>
+        <div class="pill" onclick="togglePill(this)">월급 인상</div>
+        <div class="pill" onclick="togglePill(this)">빠른 퇴근</div>
+        <div class="pill" onclick="togglePill(this)">회식 소멸</div>
+        <div class="pill" onclick="togglePill(this)">메일 차단</div>
+      </div>
+
+      <div style="margin-top:8px;" class="section-label">추가 소원 (선택)</div>
+      <input type="text" id="amuletWish" placeholder="예) 김팀장이 갑자기 제주도로 발령나게..." maxlength="40">
+
+      <button class="btn btn-gold" onclick="makeAmulet()">✨ 부적 제작하기 ✨</button>
+    </div>
+
+    <div class="ritual-progress" id="amuletProgress">
+      <div class="ritual-circle"></div>
+      <div class="ritual-msg">부적에 기운을 불어넣는 중...</div>
+    </div>
+
+    <div class="amulet-wrap" id="amuletWrap">
+      <div class="amulet-canvas-wrap">
+        <canvas id="amuletCanvas" width="180" height="280"></canvas>
+      </div>
+      <div class="amulet-label">⚡ 이 부적을 화면으로 출력하시오 ⚡</div>
+      <div class="share-row">
+        <button class="btn-sm" onclick="saveAmulet()">💾 저장</button>
+        <button class="btn-sm" onclick="newAmulet()">🔄 새 부적</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 2: 신내림 ===== -->
+  <div class="panel" id="panel2">
+    <div class="card">
+      <div class="card-title">🔮 신내림 — 오늘의 예언</div>
+      <div class="section-label">고민을 한 줄로 말씀하세요</div>
+      <textarea id="prophecyQ" rows="3" placeholder="예) 저 팀장 언제 사라지나요&#10;이 프로젝트 언제 끝나요&#10;이직을 해야 할까요"></textarea>
+      <button class="btn btn-red" onclick="getProphecy()">🎴 신탁 받기</button>
+    </div>
+
+    <div class="ritual-progress" id="prophecyProgress">
+      <div class="ritual-circle"></div>
+      <div class="ritual-msg" id="prophecyMsgText">신을 부르는 중...</div>
+    </div>
+
+    <div class="prophecy-card" id="prophecyResult" style="display:none;">
+      <div class="prophecy-symbol" id="prophecySymbol">🔮</div>
+      <div class="prophecy-text" id="prophecyText"></div>
+      <div class="prophecy-from" id="prophecyFrom"></div>
+      <div class="share-row" style="margin-top:16px;">
+        <button class="btn-sm" onclick="getProphecy()">🔄 다시 묻기</button>
+        <button class="btn-sm" onclick="copyProphecy()">📋 복사</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 3: 액막이 ===== -->
+  <div class="panel" id="panel3">
+    <div class="card">
+      <div class="card-title">💊 과로 액막이</div>
+      <div class="section-label">현재 상태 진단</div>
+      <div class="pills" id="statusPills">
+        <div class="pill" onclick="togglePill(this)">야근 3일 초과</div>
+        <div class="pill" onclick="togglePill(this)">주말 출근</div>
+        <div class="pill" onclick="togglePill(this)">점심 못 먹음</div>
+        <div class="pill on" onclick="togglePill(this)">이상한 메일 폭탄</div>
+        <div class="pill" onclick="togglePill(this)">갑자기 업무 추가</div>
+        <div class="pill" onclick="togglePill(this)">회의가 회의를 낳음</div>
+        <div class="pill on" onclick="togglePill(this)">번아웃 임박</div>
+      </div>
+      <button class="btn btn-red" onclick="getAmuletMsg()">🪬 액막이 처방받기</button>
+    </div>
+
+    <div class="ritual-progress" id="amuletMsgProgress">
+      <div class="ritual-circle"></div>
+      <div class="ritual-msg" id="amuletMsgText">기운을 살피는 중...</div>
+    </div>
+
+    <div class="output-box" id="amuletMsgResult"></div>
+
+    <div class="card" style="margin-top:0; background:rgba(201,148,26,.06);">
+      <div class="card-title">🌀 긴급 해소 의식</div>
+      <div style="color:var(--paper-dim); font-size:13px; line-height:1.8;">
+        화면을 <b style="color:var(--bright-gold)">세게 흔들거나</b> 아래 버튼을 눌러<br>나쁜 기운을 털어내세요
+      </div>
+      <button class="btn btn-gold" style="margin-top:10px;" onclick="shakeRitual()">💥 기운 털기 💥</button>
+      <div class="output-box" id="shakeResult"></div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<div id="toast"></div>
+
+<script>
+// ─── SPARKS ───────────────────────────────────────────
+const sparksEl = document.getElementById('sparks');
+for (let i = 0; i < 18; i++) {
+  const s = document.createElement('div');
+  s.className = 'spark';
+  s.style.cssText = `
+    left:${Math.random()*100}%;
+    bottom:${Math.random()*20}%;
+    animation-duration:${2.5 + Math.random()*4}s;
+    animation-delay:${Math.random()*5}s;
+    --dx:${(Math.random()-0.5)*60}px;
+    width:${2+Math.random()*3}px;
+    height:${2+Math.random()*3}px;
+    background:${Math.random()>.5?'#f0c040':'#ff6030'};
+  `;
+  sparksEl.appendChild(s);
+}
+
+// ─── TAB ──────────────────────────────────────────────
+function switchTab(i) {
+  document.querySelectorAll('.tab').forEach((t,idx) => t.classList.toggle('active', idx===i));
+  document.querySelectorAll('.panel').forEach((p,idx) => p.classList.toggle('active', idx===i));
+}
+
+// ─── TOAST ────────────────────────────────────────────
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ─── CURSE DATA ───────────────────────────────────────
+let curseLevel = 'medium';
+const curseTemplates = {
+  light: [
+    "{name}이(가) 오늘 점심에 혀를 깨물었습니다.",
+    "{name}이(가) 바지 지퍼를 올리는 것을 잊는 저주가 발동됩니다.",
+    "{name}이(가) 중요한 발표 중 콧물이 흐릅니다.",
+    "{name}의 이어폰 한쪽이 오늘부터 들립니다.",
+    "{name}이(가) 오늘 마트에서 계산 후 카드를 놓고 옵니다.",
+  ],
+  medium: [
+    "{name}은(는) 꼬리뼈 골절로 두 달간 앉을 때마다 고통을 느낍니다. 의자, 변기, 모두 고통입니다.",
+    "{name}의 발톱이 신발에 걸려 빠지는 저주가 발동됩니다. 고통은 두 주간 지속됩니다.",
+    "{name}은(는) 앞으로 3개월간 아침마다 알람을 5분 전에 끄는 저주에 걸립니다.",
+    "{name}의 편의점 삼각김밥이 매번 터집니다. 永遠히.",
+    "{name}은(는) 중요한 회의 전날 항상 잠을 못 자는 저주에 걸립니다.",
+  ],
+  spicy: [
+    "{name}의 자식이 훗날 직장에서 {name}과 똑같은 상사를 만납니다. 그리고 그 상사를 보며 본인 부모님이 생각납니다.",
+    "{name}의 자식이 신입사원 시절, 야근을 시키며 '나 때는 더 했어'라고 말하는 팀장을 만납니다.",
+    "미래의 {name} 자녀가 메신저에 '이게 왜 안 되나요^^'라는 메시지를 받게 됩니다.",
+    "{name}의 자녀가 첫 직장에서 주말 카톡 업무 지시를 받습니다. 그날 {name}도 같이 카톡을 받습니다.",
+  ],
+  karma: [
+    "{name}이(가) 퇴근 후 혼자 조용히 자신의 행동을 복기하는 시간을 갖습니다. 그리고 창피해집니다.",
+    "어느 날 {name}은(는) 후배의 표정에서 과거 자신의 모습을 봅니다. 그날 밤 잠을 못 잡니다.",
+    "{name}은(는) 갑자기 자신이 남들 눈에 어떻게 보이는지 객관적으로 알게 됩니다. 충격에서 회복하는 데 시간이 걸립니다.",
+    "{name}이(가) 자신의 과거 발언 녹취를 우연히 듣게 됩니다. 얼굴이 빨개집니다.",
+  ],
+};
+
+function selectCurse(el, level) {
+  document.querySelectorAll('.curse-option').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  curseLevel = level;
+}
+
+const ritualMsgs = [
+  '기운을 모으는 중...','혼신을 깨우는 중...','저주를 엮는 중...','신을 부르는 중...','기를 집중하는 중...'
+];
+
+let curseCount = parseInt(localStorage.getItem('curseCount') || '0');
+function updateCurseCounter() {
+  const el = document.getElementById('curseCount');
+  if (curseCount > 0) el.textContent = `이 굿판에서 지금까지 ${curseCount}번의 저주가 시전되었습니다`;
+}
+updateCurseCounter();
+
+function performCurse() {
+  const target = document.getElementById('curseTarget').value.trim() || '그 인간';
+  const msgs = curseTemplates[curseLevel];
+  const chosen = msgs[Math.floor(Math.random()*msgs.length)].replace(/{name}/g, target);
+
+  showProgress('curseProgress', 'curseMsgText', 1600, () => {
+    curseCount++;
+    localStorage.setItem('curseCount', curseCount);
+    updateCurseCounter();
+    showOutput('curseResult', `🔥 저주 발동 🔥\n\n${chosen}\n\n—— 의식 완료 ——`);
+    burstSparks();
+  });
+}
+
+// ─── AMULET ───────────────────────────────────────────
+const amuletSymbols = ['籙','符','鎮','煞','破','退','逐','斥','滅','淨','護','閉'];
+const amuletColors  = [['#c8001a','#6e0010'],['#1a006e','#000c6e'],['#006e1a','#003010'],['#6e4400','#3a2000']];
+
+function getPillValues(container) {
+  const els = container ? container.querySelectorAll('.pill.on') : document.querySelectorAll('.pill.on');
+  return Array.from(els).map(e => e.textContent);
+}
+
+function makeAmulet() {
+  showProgress('amuletProgress', null, 1800, () => {
+    document.getElementById('amuletWrap').classList.add('show');
+    drawAmulet();
+  });
+}
+
+function drawAmulet() {
+  const canvas = document.getElementById('amuletCanvas');
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const palette = amuletColors[Math.floor(Math.random()*amuletColors.length)];
+  const wish = document.getElementById('amuletWish').value.trim();
+  const pills = getPillValues(document.getElementById('panel1'));
+  const mainSym = amuletSymbols[Math.floor(Math.random()*amuletSymbols.length)];
+  const subSyms = [amuletSymbols[Math.floor(Math.random()*amuletSymbols.length)],
+                   amuletSymbols[Math.floor(Math.random()*amuletSymbols.length)]];
+
+  // BG
+  const grd = ctx.createLinearGradient(0,0,w,h);
+  grd.addColorStop(0, palette[0]); grd.addColorStop(1, palette[1]);
+  ctx.fillStyle = grd; ctx.fillRect(0,0,w,h);
+
+  // border
+  ctx.strokeStyle = '#f0c040'; ctx.lineWidth = 2;
+  ctx.strokeRect(6,6,w-12,h-12);
+  ctx.strokeRect(10,10,w-20,h-20);
+
+  // vertical lines (brush stroke effect)
+  ctx.strokeStyle = 'rgba(240,192,64,.15)'; ctx.lineWidth = 1;
+  for (let x=20; x<w-20; x+=12) { ctx.beginPath(); ctx.moveTo(x,14); ctx.lineTo(x,h-14); ctx.stroke(); }
+
+  // top text
+  ctx.fillStyle = '#f0c040';
+  ctx.font = 'bold 11px "Black Han Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('이상한 인간 퇴치', w/2, 30);
+
+  // main symbol
+  ctx.font = `bold 72px "Black Han Sans", serif`;
+  ctx.fillStyle = '#fff8ee';
+  ctx.shadowColor = '#f0c040'; ctx.shadowBlur = 20;
+  ctx.fillText(mainSym, w/2, 130);
+  ctx.shadowBlur = 0;
+
+  // sub symbols
+  ctx.font = `bold 28px "Black Han Sans", serif`;
+  ctx.fillStyle = 'rgba(240,192,64,.8)';
+  ctx.fillText(subSyms[0], w/2-38, 170);
+  ctx.fillText(subSyms[1], w/2+38, 170);
+
+  // effect text (pills)
+  ctx.font = '10px "Pretendard", sans-serif';
+  ctx.fillStyle = 'rgba(240,224,184,.65)';
+  const label = pills.length ? pills.join(' · ') : '나쁜 기운 차단';
+  ctx.fillText(label.length>20 ? label.substring(0,20)+'...' : label, w/2, 200);
+
+  // divider
+  ctx.strokeStyle = 'rgba(240,192,64,.5)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(20,212); ctx.lineTo(w-20,212); ctx.stroke();
+
+  // wish
+  if (wish) {
+    ctx.font = '11px "Pretendard", sans-serif';
+    ctx.fillStyle = 'rgba(240,224,184,.8)';
+    const ww = wish.length > 16 ? wish.substring(0,16)+'...' : wish;
+    ctx.fillText(ww, w/2, 232);
+  }
+
+  // bottom stamp
+  ctx.font = 'bold 13px "Black Han Sans", sans-serif';
+  ctx.fillStyle = 'rgba(240,192,64,.9)';
+  ctx.fillText('디지털 굿판 인증', w/2, h-32);
+  ctx.font = '10px monospace';
+  ctx.fillStyle = 'rgba(240,192,64,.4)';
+  const stamp = Math.random().toString(36).substring(2,8).toUpperCase();
+  ctx.fillText(`No. ${stamp}`, w/2, h-18);
+}
+
+function saveAmulet() {
+  const canvas = document.getElementById('amuletCanvas');
+  const a = document.createElement('a');
+  a.href = canvas.toDataURL('image/png');
+  a.download = '퇴치부적.png'; a.click();
+  toast('💾 부적 저장 완료!');
+}
+
+function newAmulet() { drawAmulet(); toast('✨ 새 부적 생성!'); }
+
+// ─── PROPHECY ─────────────────────────────────────────
+const prophecies = [
+  { sym:'🌪️', text:'지금 당신을 괴롭히는 그것은\n3개월 안에 스스로 사라집니다.\n단, 그전까지 점심은 꼭 드세요.', from:'— 바람의 신 전언' },
+  { sym:'🌕', text:'보름달이 뜨는 날,\n그 인간에게 뜻밖의 인사발령이\n내려질 것이오.', from:'— 달의 신 예언' },
+  { sym:'🐉', text:'용의 해에 시작된 인연은\n용의 해에 끝납니다.\n참고로 다음 용의 해는 2036년입니다.', from:'— 청룡 전갈' },
+  { sym:'⚡', text:'그 프로젝트, 결국 당신이 마무리합니다.\n그러나 공은 당신이 갑니다.\n(아마도)', from:'— 번개 신 예언' },
+  { sym:'🌊', text:'파도는 잠깐이나 바위는 오래입니다.\n당신이 바위입니다.\n그 인간은 물거품입니다.', from:'— 용왕 어명' },
+  { sym:'🔥', text:'곧 좋은 변화가 옵니다.\n다만 먼저 서류를 작성해야 합니다.\n모든 좋은 것에는 서류가 따릅니다.', from:'— 화신(火神) 예언' },
+  { sym:'🦊', text:'여우 같은 인간 조심하세요.\n이미 알고 있는 사람입니다.\n두 번째로 의심 가는 그 사람입니다.', from:'— 구미호 귀띔' },
+  { sym:'🌸', text:'봄이 오면 다 잊힙니다.\n그러나 기록은 남겨두세요.\n나중에 증거가 됩니다.', from:'— 꽃의 신 조언' },
+  { sym:'🎭', text:'당신의 인내심은 이미 전설입니다.\n그러나 전설은 언젠가 끝납니다.\n슬슬 이직 준비를 하셔도 됩니다.', from:'— 탈춤의 신 전언' },
+  { sym:'🧊', text:'차갑게 대응하세요.\n감정 소모는 이미 충분히 하셨습니다.\n무관심이 가장 강한 저주입니다.', from:'— 얼음 신 전언' },
+  { sym:'🍀', text:'이번 주 안에 작은 행운이 옵니다.\n편의점 영수증 긁어보세요.\n진지하게 드리는 말씀입니다.', from:'— 복신(福神) 예언' },
+  { sym:'🌙', text:'그 사람 말은 신경 쓰지 마세요.\n달도 그냥 지나갑니다.\n당신도 그냥 지나가면 됩니다.', from:'— 달의 신 조언' },
+];
+
+function getProphecy() {
+  const p = prophecies[Math.floor(Math.random()*prophecies.length)];
+  showProgress('prophecyProgress', 'prophecyMsgText', 1800, () => {
+    document.getElementById('prophecyResult').style.display = 'block';
+    document.getElementById('prophecySymbol').textContent = p.sym;
+    document.getElementById('prophecyText').style.whiteSpace = 'pre-line';
+    document.getElementById('prophecyText').textContent = p.text;
+    document.getElementById('prophecyFrom').textContent = p.from;
+    document.getElementById('prophecyResult').style.animation = 'none';
+    void document.getElementById('prophecyResult').offsetWidth;
+    document.getElementById('prophecyResult').style.animation = 'fadein .4s ease';
+    burstSparks();
+  });
+}
+
+function copyProphecy() {
+  const txt = document.getElementById('prophecyText').textContent +
+    '\n' + document.getElementById('prophecyFrom').textContent;
+  navigator.clipboard.writeText(txt).then(() => toast('📋 예언 복사 완료!')).catch(() => toast('복사 실패... 손으로 적어주세요'));
+}
+
+// ─── AMULET MSG ───────────────────────────────────────
+const amuletMsgs = [
+  '🪬 처방: 오늘 퇴근 후 치킨 한 마리를 드십시오. 기름기가 나쁜 기운을 녹입니다.',
+  '🧿 처방: 그 분의 카톡 알림을 조용히로 설정하십시오. 모르는 것이 복입니다.',
+  '💊 처방: 오늘 하루 "죄송합니다" 대신 "확인하겠습니다"를 써보십시오. 기운이 달라집니다.',
+  '🌿 처방: 창문을 여세요. 신선한 공기가 최고의 부적입니다. 비가 와도 잠깐만요.',
+  '🔋 처방: 지금 당장 물 한 잔 드십시오. 탈수된 뇌로는 이 상황을 이길 수 없습니다.',
+  '🛡️ 처방: 오늘은 밥 먹을 때 핸드폰을 뒤집어 놓으십시오. 밥상 앞에서는 누구도 당신을 찾지 못합니다.',
+  '🌙 처방: 퇴근 후 업무 카톡은 내일 오전 9시 이후에 읽으십시오. 저녁 시간은 신성합니다.',
+  '🎋 처방: 지금 하고 있는 일을 5분만 멈추십시오. 세상은 그 5분 동안 멈추지 않습니다. 하지만 당신은 숨을 쉬어야 합니다.',
+  '🍵 처방: 따뜻한 것을 드십시오. 몸이 따뜻하면 마음의 방어막이 올라갑니다.',
+  '✂️ 처방: 하지 않아도 되는 일 목록을 써보십시오. 생각보다 많습니다.',
+];
+
+function getAmuletMsg() {
+  showProgress('amuletMsgProgress', 'amuletMsgText', 1500, () => {
+    const msg = amuletMsgs[Math.floor(Math.random()*amuletMsgs.length)];
+    showOutput('amuletMsgResult', msg);
+    burstSparks();
+  });
+}
+
+const shakeResults = [
+  '💥 나쁜 기운 72% 소멸! 남은 28%는 퇴근 후 자연 소멸됩니다.',
+  '🌀 기운 정화 완료! 그 인간의 기운이 당신에게서 떠났습니다.',
+  '⚡ 충격파 발사! 반경 10m 이내의 이상한 에너지가 분해됩니다.',
+  '💨 액운 날리기 완료! 오늘의 잔여 스트레스: 거의 없음',
+  '🔥 정화 불꽃 점화! 당신을 둘러싼 진상의 기운이 재로 변합니다.',
+  '🌊 파동 정화 완료! 오늘의 짜증이 바다로 흘러갑니다. 고래가 처리합니다.',
+];
+
+function shakeRitual() {
+  const msg = shakeResults[Math.floor(Math.random()*shakeResults.length)];
+  // haptic if available
+  if (navigator.vibrate) navigator.vibrate([50,30,50,30,100]);
+  showOutput('shakeResult', msg);
+  burstSparks(20);
+  toast('💥 기운 정화!');
+}
+
+// ─── HELPERS ──────────────────────────────────────────
+function togglePill(el) { el.classList.toggle('on'); }
+
+function showProgress(progressId, msgId, delay, cb) {
+  const prog = document.getElementById(progressId);
+  prog.classList.add('show');
+  if (msgId) {
+    let i = 0;
+    const interval = setInterval(() => {
+      document.getElementById(msgId).textContent = ritualMsgs[i % ritualMsgs.length]; i++;
+    }, 400);
+    setTimeout(() => { clearInterval(interval); prog.classList.remove('show'); cb(); }, delay);
+  } else {
+    setTimeout(() => { prog.classList.remove('show'); cb(); }, delay);
+  }
+}
+
+function showOutput(id, text) {
+  const el = document.getElementById(id);
+  el.style.whiteSpace = 'pre-line';
+  el.textContent = text;
+  el.classList.add('show');
+}
+
+function burstSparks(count=10) {
+  for (let i=0; i<count; i++) {
+    const s = document.createElement('div');
+    s.className = 'spark';
+    s.style.cssText = `
+      left:${20+Math.random()*60}%; bottom:${30+Math.random()*40}%;
+      animation-duration:${1+Math.random()*2}s;
+      animation-delay:${Math.random()*0.3}s;
+      --dx:${(Math.random()-0.5)*80}px;
+      width:${3+Math.random()*4}px; height:${3+Math.random()*4}px;
+      background:${Math.random()>.4?'#f0c040':'#ff5020'};
+    `;
+    sparksEl.appendChild(s);
+    setTimeout(() => s.remove(), 3000);
+  }
+}
+
+// shake detection
+let lastShake = 0;
+window.addEventListener('devicemotion', e => {
+  const a = e.accelerationIncludingGravity;
+  if (!a) return;
+  const force = Math.abs(a.x)+Math.abs(a.y)+Math.abs(a.z);
+  if (force > 35 && Date.now()-lastShake > 2000) {
+    lastShake = Date.now();
+    // only if on tab 3
+    if (document.getElementById('panel3').classList.contains('active')) {
+      shakeRitual();
+    } else {
+      burstSparks(8);
+      toast('📳 기운이 흔들렸습니다!');
+    }
+  }
+});
+</script>
+</body>
+</html>
